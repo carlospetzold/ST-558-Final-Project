@@ -6,7 +6,7 @@
 
 library(tidyverse)
 library(tidyquant) #brings quantitative financial analysis into the tidyverse
-library(lubridate) #makes working with dates and times intuitive
+library(lubridate) #makes working with dates and times easier
 
 
 #Let's use data from the last 20 years (Jan 1 2006) and end at the latest completed month (Oct 2026)
