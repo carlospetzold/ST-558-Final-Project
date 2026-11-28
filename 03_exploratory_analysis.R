@@ -298,3 +298,104 @@ ggsave(
   height = 5,
   dpi = 300
 )
+
+
+# Predictor Distributions
+
+predictor_data <- train_data |>
+  select(
+    metal,
+    outperform_next_month,
+    fed_funds_rate,
+    real_yield_10y,
+    yield_spread,
+    vix,
+    spy_return,
+    metal_return
+  ) |>
+  pivot_longer(
+    cols = -c(metal, outperform_next_month),
+    names_to = "predictor",
+    values_to = "value"
+  )
+
+p5 <- ggplot(
+  predictor_data,
+  aes(
+    x = outperform_next_month,
+    y = value,
+    fill = metal
+  )
+) +
+  geom_boxplot(
+    alpha = 0.75,
+    outlier.alpha = 0.4
+  ) +
+  facet_wrap(
+    ~ predictor,
+    scales = "free_y",
+    ncol = 2
+  ) +
+  labs(
+    title = "Economic Conditions and Next-Month Outperformance",
+    subtitle = "Predictor distributions in the training period",
+    x = "Outperformed SPY Next Month?",
+    y = "Predictor Value",
+    fill = "Metal"
+  ) +
+  theme_minimal(base_size = 11)
+
+print(p5)
+
+ggsave(
+  "figures/05_predictor_distributions.png",
+  plot = p5,
+  width = 11,
+  height = 10,
+  dpi = 300
+)
+
+
+# Descriptive summaries
+
+descriptive_stats <- train_data |>
+  group_by(metal) |>
+  summarise(
+    observations = n(),
+    mean_metal_return = mean(metal_return),
+    sd_metal_return = sd(metal_return),
+    mean_spy_return = mean(spy_return),
+    mean_fed_funds_rate = mean(fed_funds_rate),
+    mean_treasury_10y = mean(treasury_10y),
+    mean_real_yield = mean(real_yield_10y),
+    mean_yield_spread = mean(yield_spread),
+    mean_vix = mean(vix),
+    outperformance_rate = mean(
+      outperform_next_month == "Yes"
+    ),
+    .groups = "drop"
+  )
+
+print(descriptive_stats)
+
+# Save summary tables
+dir.create(
+  "data/summaries",
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+
+write_csv(
+  descriptive_stats,
+  "data/summaries/descriptive_statistics.csv"
+)
+
+write_csv(
+  outcome_summary,
+  "data/summaries/outcome_distribution.csv"
+)
+
+write_csv(
+  yield_curve_summary,
+  "data/summaries/yield_curve_summary.csv"
+)

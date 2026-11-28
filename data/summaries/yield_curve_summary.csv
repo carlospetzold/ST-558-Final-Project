@@ -1,0 +1,5 @@
+metal,yield_curve,n_months,n_outperform,outperform_rate
+Gold,Inverted,3,1,0.3333333333333333
+Gold,Non-Inverted,162,71,0.4382716049382716
+Silver,Inverted,3,1,0.3333333333333333
+Silver,Non-Inverted,162,73,0.4506172839506173
